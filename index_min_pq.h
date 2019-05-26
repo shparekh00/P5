@@ -111,6 +111,7 @@ unsigned int IndexMinPQ<K>::Top(void) {
     throw std::underflow_error("Priority queue underflow!");
 
   // TODO: return index at top of priority queue
+  return heap_to_idx[1];
 }
 
 template <typename K>
@@ -134,6 +135,11 @@ void IndexMinPQ<K>::Push(const K &key, unsigned int idx) {
   //  - Set key in key vector
   // 2. Percolate up
   // (for debugging, check heap order)
+  cur_size++;
+  heap_to_idx[cur_size] = idx;
+  idx_to_heap[idx] = cur_size;
+  keys[idx] = key;
+  PercolateUp(cur_size);
 }
 
 template <typename K>
@@ -166,6 +172,11 @@ void IndexMinPQ<K>::Pop() {
   // 2. Restore heap order
   // 3. Mark idx_to_heap mapping as invalid
   // (for debugging, check heap order)
+  int min = Top();
+  SwapNodes(min, cur_size--);
+  PercolateDown();
+  idx_to_heap[min] = -1;
+  keys[min] = nullptr;
 }
 
 template <typename K>
@@ -187,6 +198,9 @@ void IndexMinPQ<K>::ChangeKey(const K &key, unsigned int idx) {
   // 2. Restore heap-order
   //  - Note that key might be have increased _or_ decreased
   // (for debugging, check heap order)
+  keys[idx] = key;
+  PercolateDown(idx);
+  PercolateUp(idx);
 }
 
 #endif  // INDEX_MIN_PQ_H_
