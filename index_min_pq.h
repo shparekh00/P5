@@ -172,9 +172,10 @@ void IndexMinPQ<K>::Pop() {
   // 2. Restore heap order
   // 3. Mark idx_to_heap mapping as invalid
   // (for debugging, check heap order)
+  cur_size--;
   int min = Top();
-  SwapNodes(min, cur_size--);
-  PercolateDown(1);
+  SwapNodes(min, cur_size-1);
+  PercolateDown(Top());
   idx_to_heap[min] = -1;
   //keys[min] = NULL;
 }
