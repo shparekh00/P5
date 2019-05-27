@@ -176,7 +176,7 @@ void IndexMinPQ<K>::Pop() {
   SwapNodes(min, cur_size--);
   PercolateDown(Top());
   idx_to_heap[min] = -1;
-  keys[min] = NULL;
+  //keys[min] = NULL;
 }
 
 template <typename K>
