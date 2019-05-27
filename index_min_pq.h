@@ -174,7 +174,7 @@ void IndexMinPQ<K>::Pop() {
   // (for debugging, check heap order)
   cur_size--;
   int min = Top();
-  SwapNodes(min, cur_size-1);
+  SwapNodes(min, cur_size);
   PercolateDown(Top());
   idx_to_heap[min] = -1;
   //keys[min] = NULL;
