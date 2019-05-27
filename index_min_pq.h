@@ -135,11 +135,11 @@ void IndexMinPQ<K>::Push(const K &key, unsigned int idx) {
   //  - Set key in key vector
   // 2. Percolate up
   // (for debugging, check heap order)
-  cur_size++;
   heap_to_idx[cur_size] = idx;
   idx_to_heap[idx] = cur_size;
   keys[idx] = key;
   PercolateUp(cur_size);
+  cur_size++;
 }
 
 template <typename K>
