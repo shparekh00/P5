@@ -38,6 +38,61 @@ TEST(IndexMinPQ, SimpleScenario) {
   EXPECT_EQ(impq.Top(), 93);
 }
 
+TEST(IndexMinPQ, Overflow) {
+  // Indexed min-priority queue of capacity 4
+  IndexMinPQ<double> impq(4);
+
+  // Insert a bunch of key-value
+  std::vector<std::pair<double, unsigned int>> keyval{
+          { 2.2, 99},
+          { 51.0, 54},
+          { 42.5, 53},
+          { 74.32, 93}
+  };
+  for (auto &i : keyval) {
+  impq.Push(i.first, i.second);
+  }
+
+  EXPECT_THROW(impq.Push(7.7, 24), std::overflow_error);
+}
+
+TEST(IndexMinPQ, RepeatValue) {
+// Indexed min-priority queue of capacity 100
+IndexMinPQ<double> impq(100);
+
+// Insert a bunch of key-value
+std::vector<std::pair<double, unsigned int>> keyval{
+        { 2.2, 99},
+        { 51.0, 54},
+        { 42.5, 53},
+        { 74.32, 93}
+};
+for (auto &i : keyval) {
+impq.Push(i.first, i.second);
+}
+
+EXPECT_THROW(impq.Push(7.7, 99), std::overflow_error);
+}
+
+TEST(IndexMinPQ, RepeatKey) {
+// Indexed min-priority queue of capacity 100
+IndexMinPQ<double> impq(100);
+
+// Insert a bunch of key-value
+std::vector<std::pair<double, unsigned int>> keyval{
+        { 2.2, 99},
+        { 51.0, 54},
+        { 42.5, 53},
+        { 74.32, 93}
+};
+for (auto &i : keyval) {
+impq.Push(i.first, i.second);
+}
+impq.Push(2.2, 24)
+
+EXPECT_EQ(impq.Top(), 99);
+}
+
 int main(int argc, char *argv[]) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

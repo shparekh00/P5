@@ -140,6 +140,7 @@ void IndexMinPQ<K>::Push(const K &key, unsigned int idx) {
   idx_to_heap[idx] = cur_size;
   keys[idx] = key;
   PercolateUp(cur_size);
+  CheckHeapOrder(Root());
 }
 
 template <typename K>
@@ -178,6 +179,7 @@ void IndexMinPQ<K>::Pop() {
   PercolateDown(Root());
   idx_to_heap[min] = -1;
   //keys[min] = NULL;
+  CheckHeapOrder(Root());
 }
 
 template <typename K>
