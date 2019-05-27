@@ -94,6 +94,57 @@ TEST(IndexMinPQ, RepeatKey) {
   EXPECT_EQ(impq.Top(), 99);
 }
 
+TEST(IndexMinPQ, Underflow) {
+  // Indexed min-priority queue of capacity 100
+  IndexMinPQ<double> impq(100);
+
+  // Insert a bunch of key-value
+  std::vector<std::pair<double, unsigned int>> keyval{
+          { 2.2, 99},
+          { 51.0, 54},
+  };
+  for (auto &i : keyval) {
+    impq.Push(i.first, i.second);
+  }
+
+  impq.Pop();
+  impq.Pop();
+
+  EXPECT_THROW(impq.Pop(), std::underflow_error);
+}
+
+TEST(IndexMinPQ, ChangeKeyIdxOutofBounds) {
+  // Indexed min-priority queue of capacity 100
+  IndexMinPQ<double> impq(100);
+
+  // Insert a bunch of key-value
+  std::vector<std::pair<double, unsigned int>> keyval{
+          { 2.2, 99},
+          { 51.0, 54},
+  };
+  for (auto &i : keyval) {
+    impq.Push(i.first, i.second);
+  }
+
+  EXPECT_THROW(impq.ChangeKey(2.2, 102), std::overflow_error);
+}
+
+TEST(IndexMinPQ, ChangeKeyNonexistent) {
+  // Indexed min-priority queue of capacity 100
+  IndexMinPQ<double> impq(100);
+
+  // Insert a bunch of key-value
+  std::vector<std::pair<double, unsigned int>> keyval{
+          { 2.2, 99},
+          { 51.0, 54},
+  };
+  for (auto &i : keyval) {
+    impq.Push(i.first, i.second);
+  }
+
+  EXPECT_THROW(impq.ChangeKey(1.0, 54), std::runtime_error);
+}
+
 int main(int argc, char *argv[]) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
