@@ -142,19 +142,19 @@ void IndexMinPQ<K>::Push(const K &key, unsigned int idx) {
   PercolateUp(cur_size);
 
   std::cout << "heap_to_idx: ";
-  for(auto &i : cur_size) {
+  for(int i=1; i <= cur_size; i++) {
     std::cout << heap_to_idx[i] << " ";
   }
   std::cout << "\n";
 
   std::cout << "idx_to_heap: ";
-  for(auto &i : cur_size) {
+  for(int i=1; i <= cur_size; i++) {
     std::cout << idx_to_heap[i] << " ";
   }
   std::cout << "\n";
 
   std::cout << "keys: ";
-  for(auto &i : cur_size) {
+  for(int i=1; i <= cur_size; i++) {
     std::cout << keys[i] << " ";
   }
   std::cout << "\n";
