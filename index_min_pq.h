@@ -176,6 +176,7 @@ void IndexMinPQ<K>::Pop() {
   int min = Top();
   SwapNodes(min, cur_size);
   cur_size--;
+  std::cout << "Top: " << Top();
   PercolateDown(Top());
   idx_to_heap[min] = -1;
   //keys[min] = NULL;
