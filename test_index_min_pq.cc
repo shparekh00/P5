@@ -53,7 +53,7 @@ TEST(IndexMinPQ, Overflow) {
     impq.Push(i.first, i.second);
   }
 
-  EXPECT_THROW(impq.Push(7.7, 24), std::overflow_error);
+  EXPECT_THROW(impq.Push(7.7, 24), std::overflow_error("Index invalid!"));
 }
 
 TEST(IndexMinPQ, RepeatValue) {
@@ -71,7 +71,7 @@ TEST(IndexMinPQ, RepeatValue) {
     impq.Push(i.first, i.second);
   }
 
-  EXPECT_THROW(impq.Push(7.7, 99), std::overflow_error);
+  EXPECT_THROW(impq.Push(7.7, 99), std::runtime_error("Index already exists!"));
 }
 
 TEST(IndexMinPQ, RepeatKey) {
