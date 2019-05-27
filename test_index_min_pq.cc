@@ -89,7 +89,7 @@ TEST(IndexMinPQ, RepeatKey) {
     impq.Push(i.first, i.second);
   }
 
-  impq.Push(2.2, 24)
+  impq.Push(2.2, 24);
 
   EXPECT_EQ(impq.Top(), 99);
 }
