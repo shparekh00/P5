@@ -40,7 +40,7 @@ TEST(IndexMinPQ, SimpleScenario) {
 
 TEST(IndexMinPQ, Overflow) {
   // Indexed min-priority queue of capacity 4
-  IndexMinPQ<double> impq(4);
+  IndexMinPQ<double> impq(100);
 
   // Insert a bunch of key-value
   std::vector<std::pair<double, unsigned int>> keyval{
@@ -53,7 +53,7 @@ TEST(IndexMinPQ, Overflow) {
     impq.Push(i.first, i.second);
   }
 
-  EXPECT_THROW(impq.Push(7.7, 24), std::overflow_error);
+  EXPECT_THROW(impq.Push(7.7, 102), std::overflow_error);
 }
 
 TEST(IndexMinPQ, RepeatValue) {
