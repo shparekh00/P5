@@ -142,7 +142,7 @@ TEST(IndexMinPQ, ChangeKeyNonexistent) {
     impq.Push(i.first, i.second);
   }
 
-  EXPECT_THROW(impq.ChangeKey(1.0, 54), std::runtime_error);
+  EXPECT_THROW(impq.ChangeKey(1.0, 52), std::runtime_error);
 }
 
 int main(int argc, char *argv[]) {
