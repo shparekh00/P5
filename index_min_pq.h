@@ -140,24 +140,6 @@ void IndexMinPQ<K>::Push(const K &key, unsigned int idx) {
   idx_to_heap[idx] = cur_size;
   keys[idx] = key;
   PercolateUp(cur_size);
-
-  std::cout << "heap_to_idx: ";
-  for(unsigned int i=1; i <= cur_size; i++) {
-    std::cout << heap_to_idx[i] << " ";
-  }
-  std::cout << "\n";
-
-  std::cout << "idx_to_heap: ";
-  for(unsigned int i=1; i <= cur_size; i++) {
-    std::cout << idx_to_heap[i] << " ";
-  }
-  std::cout << "\n";
-
-  std::cout << "keys: ";
-  for(unsigned int i=1; i <= cur_size; i++) {
-    std::cout << keys[i] << " ";
-  }
-  std::cout << "\n";
 }
 
 template <typename K>
@@ -219,8 +201,8 @@ void IndexMinPQ<K>::ChangeKey(const K &key, unsigned int idx) {
   //  - Note that key might be have increased _or_ decreased
   // (for debugging, check heap order)
   keys[idx] = key;
-  PercolateDown(idx);
-  PercolateUp(idx);
+  PercolateDown(idx_to_heap[idx]);
+  PercolateUp(idx_to_heap[idx]);
 }
 
 #endif  // INDEX_MIN_PQ_H_
