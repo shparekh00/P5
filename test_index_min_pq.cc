@@ -44,13 +44,13 @@ TEST(IndexMinPQ, Overflow) {
 
   // Insert a bunch of key-value
   std::vector<std::pair<double, unsigned int>> keyval{
-          { 2.2, 99},
-          { 51.0, 54},
-          { 42.5, 53},
-          { 74.32, 93}
+    { 2.2, 99},
+    { 51.0, 54},
+    { 42.5, 53},
+    { 74.32, 93}
   };
   for (auto &i : keyval) {
-  impq.Push(i.first, i.second);
+    impq.Push(i.first, i.second);
   }
 
   EXPECT_THROW(impq.Push(7.7, 24), std::overflow_error);
@@ -62,13 +62,13 @@ TEST(IndexMinPQ, RepeatValue) {
 
   // Insert a bunch of key-value
   std::vector<std::pair<double, unsigned int>> keyval{
-          { 2.2, 99},
-          { 51.0, 54},
-          { 42.5, 53},
-          { 74.32, 93}
+    { 2.2, 99},
+    { 51.0, 54},
+    { 42.5, 53},
+    { 74.32, 93}
   };
   for (auto &i : keyval) {
-  impq.Push(i.first, i.second);
+    impq.Push(i.first, i.second);
   }
 
   EXPECT_THROW(impq.Push(7.7, 99), std::overflow_error);
@@ -86,8 +86,9 @@ TEST(IndexMinPQ, RepeatKey) {
           { 74.32, 93}
   };
   for (auto &i : keyval) {
-  impq.Push(i.first, i.second);
+    impq.Push(i.first, i.second);
   }
+
   impq.Push(2.2, 24)
 
   EXPECT_EQ(impq.Top(), 99);
