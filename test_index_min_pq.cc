@@ -1,11 +1,11 @@
-// @copyright Shivani Parekh and Urmi Lalchandani
+// @copyright 2019 Shivani Parekh and Urmi Lalchandani
 
-#include "index_min_pq.h"
 #include <algorithm>
 #include <iostream>
 #include <utility>
 #include <vector>
 #include <gtest/gtest.h>
+#include "index_min_pq.h"
 
 
 /* Test cases for doubles */
