@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include "index_min_pq.h"
 
 // EDGE CLASS
@@ -39,6 +40,7 @@ public:
   explicit Vertex();
   void AddEdge(Edge e);
   std::vector<Edge> CollectionEdges();
+  bool ContainsEdge(Edge &e);
 
 private:
   std::vector<Edge> edges;
@@ -49,6 +51,15 @@ void Vertex::AddEdge(Edge e) {
 }
 std::vector<Edge> Vertex::CollectionEdges() {
   return edges;
+}
+bool Vertex::ContainsEdge(Edge &e) {
+  bool contains = false;
+  std::vector<Edge> edge_vec = CollectionEdges();
+  for (auto &ed: edge_vec) {
+    if (ed.Destination() == e.Destination())
+      contains = true;
+  }
+  return contains;
 }
 
 // GRAPH CLASS
@@ -201,8 +212,10 @@ int main(int argc, char *argv[]) {
         Edge e1(source, destination, weight);
         Edge e2(destination, source, weight);
         // vertices[source] gives a Vertex*
-        vertices[source].AddEdge(e1);
-        vertices[destination].AddEdge(e2);
+        if (!vertices[source].ContainsEdge(e1)) {
+          vertices[source].AddEdge(e1);
+          vertices[destination].AddEdge(e2);
+        }
     }
 
     Graph g(vertices);
