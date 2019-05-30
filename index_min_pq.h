@@ -112,7 +112,7 @@ unsigned int IndexMinPQ<K>::Top(void) {
   if (!Size())
     throw std::underflow_error("Priority queue underflow!");
 
-  // TODO: return index at top of priority queue
+  // return index at top of priority queue
   return heap_to_idx[1];
 }
 
@@ -131,7 +131,6 @@ void IndexMinPQ<K>::Push(const K &key, unsigned int idx) {
   if (Contains(idx))
     throw std::runtime_error("Index already exists!");
 
-  // TODO: push key-value pair made of @key and @idx
   // 1. Insert item at the end
   //  - Set both mapping tables properly
   //  - Set key in key vector
@@ -170,7 +169,6 @@ void IndexMinPQ<K>::Pop() {
   if (!Size())
     throw std::underflow_error("Empty priority queue!");
 
-  // TODO: remove min item
   // 1. Move last item back to root and reduce heap's size
   // 2. Restore heap order
   // 3. Mark idx_to_heap mapping as invalid
@@ -198,7 +196,6 @@ void IndexMinPQ<K>::ChangeKey(const K &key, unsigned int idx) {
   if (!Contains(idx))
     throw std::runtime_error("Index does not exist!");
 
-  // TODO: modify the key associated to index @idx
   // 1. Update key in key vector
   // 2. Restore heap-order
   //  - Note that key might be have increased _or_ decreased
