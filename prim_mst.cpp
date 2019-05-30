@@ -124,8 +124,8 @@ void MST::Prim(Graph graph) {
 //    edge.push_back(nullptr);
     marked.push_back(false);
   }
+  
 //  for each vertex in graph.Vertices()
-//  for (Vertex i : graph.Vertices()) {
   for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
     // skip visited vertex
     if (marked[i]) {
