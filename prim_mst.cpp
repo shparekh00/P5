@@ -5,50 +5,50 @@
 // EDGE CLASS
 class Edge {
 public:
-    // initializes private variables
-    explicit Edge(unsigned int s, unsigned int d, double w);
-    // return source
-    unsigned int Source();
-    // return destination
-    unsigned int Destination();
-    // return weight
-    double Weight();
+  // initializes private variables
+  explicit Edge(unsigned int s, unsigned int d, double w);
+  // return source
+  unsigned int Source();
+  // return destination
+  unsigned int Destination();
+  // return weight
+  double Weight();
 
 private:
-    unsigned int source, destination;
-    double weight;
+  unsigned int source, destination;
+  double weight;
 };
 Edge::Edge(unsigned int s, unsigned int d, double w) {
-    source = s;
-    destination = d;
-    weight = w;
+  source = s;
+  destination = d;
+  weight = w;
 }
 unsigned int Edge::Source() {
-    return source;
+  return source;
 }
 unsigned int Edge::Destination() {
-    return destination;
+  return destination;
 }
 double Edge::Weight() {
-    return weight;
+  return weight;
 }
 
 // VERTEX CLASS
 class Vertex {
- public:
-    explicit Vertex();
-    void AddEdge(Edge e);
-    std::vector<Edge> CollectionEdges();
+public:
+  explicit Vertex();
+  void AddEdge(Edge e);
+  std::vector<Edge> CollectionEdges();
 
- private:
-    std::vector<Edge> edges;
+private:
+  std::vector<Edge> edges;
 };
 Vertex::Vertex() {}
 void Vertex::AddEdge(Edge e) {
-    edges.push_back(e);
+  edges.push_back(e);
 }
 std::vector<Edge> Vertex::CollectionEdges() {
-    return edges;
+  return edges;
 }
 
 // GRAPH CLASS
@@ -57,9 +57,11 @@ class Graph {
     explicit Graph(std::vector<Vertex> v);
     std::vector<Vertex> Vertices();
     void Printer(Graph g);
+    size_t GetNumEdges();
  private:
     std::vector<Vertex> vertices;
 };
+
 Graph::Graph(std::vector<Vertex> v) {
     vertices = v;
 }
@@ -76,51 +78,73 @@ void Graph::Printer(Graph g) {
         i++;
     }
 }
+size_t Graph::GetNumEdges() {
+  size_t num_edges = 0;
+  for (auto &v : Vertices()){
+    num_edges+= v.CollectionEdges().size();
+  }
+  return num_edges;
+}
 
 // MIN SPANNING TREE CLASS
 class MST {
 public:
-    MST();
-    void Prim(Graph g);
+  MST();
+  void Prim(Graph g);
 
 private:
-//    Graph graph;
+//  Graph graph;
+  std::vector<Edge> edge;
+
 };
 MST::MST() {}
 void MST::Prim(Graph graph) {
-    IndexMinPQ<double> pqueue(graph.Vertices().size());
-    std::vector<unsigned int> dist;
-    std::vector<Edge> edge;
-    std::vector<bool> marked;
+  // key = weight index = dest_vert
+  IndexMinPQ<double> pqueue(graph.GetNumEdges());
+  std::vector<double> dist;  // dist from src to v
+  //std::vector<Edge> edge;  // best edge to v
+  std::vector<bool> marked;  // has vertex already been visited?
 
-    for (Vertex v : graph.Vertices()) {
-        dist.push_back(HUGE_VAL);
-        edge.push_back(nullptr);
-        marked.push_back(false);
+  for (Vertex v : graph.Vertices()) {
+      dist.push_back(HUGE_VAL);
+      edge.push_back(nullptr);
+      marked.push_back(false);
+  }
+
+//  for (Vertex v : graph.Vertices()) {
+  for(int i = 0; i < graph.Vertices().size(); i++) {
+    // skip visited vertex
+    if (marked[i]) {
+      continue;
     }
 
-    for (Vertex v : graph.Vertices()) {
-        // skip visited vertex
-        if (marked[v]) {
-            continue;
+    dist[i] = 0;  // distance to itself is 0
+    // for each v search edge list
+    // find smallest edge for that v
+    pqueue.Push(dist[i], i); //
+
+    while (pqueue.Size() > 0) {
+      double u = pqueue.Top();  // get destination w/ smallest weight
+      pqueue.Pop();
+
+      marked[u] = true;
+
+      for (Edge neighbor : graph.vertices[u].CollectionEdges()) {
+        if (marked[neighbor.Destination()]) {
+          continue;
         }
-
-        dist[v] = 0;
-        pqueue.Push(v, dist[v]);
-
-        while (pqueue.Size() > 0) {
-            unsigned int u = pqueue.Top();
-            pqueue.Pop();
-
-            marked[u] = true;
-
-//            for (Vertex neighbor : u) {
-//                if (marked[neighbor]) {
-//                        continue;
-//                }
-//            }
-
+        if (neighbor.Weight() < dist[neighbor.Destination()]) {
+          dist[neighbor.Destination()] = neighbor.Weight();
+          edge[neighbor.Destination()] = neighbor;
+          if (pqueue.Contains(neighbor.Destination())) {
+            pqueue.ChangeKey(dist[neighbor.Destination()], neighbor.Destination());
+          } else {
+            pqueue.Push(dist[neighbor.Destination()], neighbor.Destination());
+          }
         }
+      }
+
+    }
 
     }
 
@@ -167,6 +191,7 @@ int main(int argc, char *argv[]) {
 
         // vertices[source] gives a Vertex*
         vertices[source].AddEdge(e);
+        vertices[destination].AddEdge(e);
     }
 
     Graph g(vertices);
