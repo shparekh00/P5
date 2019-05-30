@@ -1,11 +1,12 @@
+// @copyright Shivani Parekh and Urmi Lalchandani
+
+#include "index_min_pq.h"
 #include <algorithm>
 #include <iostream>
 #include <utility>
 #include <vector>
-
 #include <gtest/gtest.h>
 
-#include "index_min_pq.h"
 
 /* Test cases for doubles */
 
@@ -219,7 +220,6 @@ TEST(IndexMinPQ, SimplePush) {
   EXPECT_TRUE(impq.Contains(54));
   EXPECT_TRUE(impq.Contains(32));
   EXPECT_TRUE(impq.Contains(24));
-
 }
 
 
