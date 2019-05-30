@@ -111,7 +111,7 @@ void MST::Prim(Graph graph) {
 //    edge.push_back(nullptr);
     marked.push_back(false);
   }
-//  for each vertex in graph.Vertices()
+  // for each vertex in graph.Vertices()
 //  for (Vertex i : graph.Vertices()) {
   for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
     // skip visited vertex
@@ -206,7 +206,7 @@ int main(int argc, char *argv[]) {
     }
 
     Graph g(vertices);
-    g.Printer(g);
+//    g.Printer(g);
 
     MST m;
     m.Prim(g);
