@@ -107,14 +107,13 @@ void MST::Prim(Graph graph) {
   std::vector<bool> marked;  // has vertex already been visited?
 
   for (Vertex v : graph.Vertices()) {
-      dist.push_back(inf);
-//      edge.push_back(nullptr);
-      marked.push_back(false);
+    dist.push_back(inf);
+//    edge.push_back(nullptr);
+    marked.push_back(false);
   }
-
-  // for each vertex in graph.Vertices()
+//  for each vertex in graph.Vertices()
 //  for (Vertex i : graph.Vertices()) {
-  for(int i = 0; i < graph.Vertices().size(); i++) {
+  for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
     // skip visited vertex
     if (marked[i]) {
       continue;
@@ -198,12 +197,12 @@ int main(int argc, char *argv[]) {
     while(!ifs.eof()) {
         // read one line to get an edge
         ifs >> source >> destination >> weight;
-        Edge e(source, destination, weight);
-//        Edge e_flip(destination, source, weight);
 
+        Edge e1(source, destination, weight);
+        Edge e2(destination, source, weight);
         // vertices[source] gives a Vertex*
-        vertices[source].AddEdge(e);
-//        vertices[destination].AddEdge(e_flip);
+        vertices[source].AddEdge(e1);
+        vertices[destination].AddEdge(e2);
     }
 
     Graph g(vertices);
