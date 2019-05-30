@@ -1,4 +1,4 @@
-// @copyright Shivani Parekh and Urmi Lalchandani
+// @copyright 2019 Shivani Parekh and Urmi Lalchandani
 
 #ifndef INDEX_MIN_PQ_H_
 #define INDEX_MIN_PQ_H_
