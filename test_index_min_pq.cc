@@ -4,9 +4,8 @@
 #include <iostream>
 #include <utility>
 #include <vector>
-#include <gtest/gtest.h>
 #include "index_min_pq.h"
-
+#include <gtest/gtest.h>
 
 /* Test cases for doubles */
 
@@ -42,7 +41,7 @@ TEST(IndexMinPQ, SimpleScenario) {
 }
 
 TEST(IndexMinPQ, Overflow) {
-  // Indexed min-priority queue of capacity 4
+  // Indexed min-priority queue of capacity 100
   IndexMinPQ<double> impq(100);
 
   // Insert a bunch of key-value
