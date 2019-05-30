@@ -1,3 +1,5 @@
+#include <iostream>
+#include <fstream>
 #include "index_min_pq.h"
 
 class Edge {
@@ -62,22 +64,14 @@ std::vector<Edge*> Vertex::CollectionEdges() {
 
 class Graph {
  public:
-    explicit Graph(int num);
-    void AddVertex(Vertex* v);
+    explicit Graph();
 
  private:
-    int num_vertices;
-    std::array<Vertex*, num_vertices> vertices[];
+//    int num_vertices;
+    std::vector<Vertex*> Vertices;
 };
 
-Graph::Graph(std::array<Vertex*> v[]) {
-    vertices = v;
-}
-
-void Graph::AddVertex(Vertex *v) {
-    vertices[num_vertices] = v;
-    num_vertices++;
-}
+Graph::Graph() {}
 
 
 class MST {
@@ -93,14 +87,14 @@ MST::MST() {
 }
 
 void MST::Prim(Graph graph) {
-    IndexMinPQ pqueue;
+//    IndexMinPQ<Edge*> pqueue;
 
 }
 
 
 
 
-int main(int argc, char*[] argv) {
+int main(int argc, char *argv[]) {
     std::ifstream ifs;
     ifs.open(argv[1]);
     if (!ifs.is_open()) {
@@ -110,7 +104,13 @@ int main(int argc, char*[] argv) {
 
     int capacity;
     ifs >> capacity;
-    std::array<Vertex*, capacity> vertices[];
+
+    std::vector<Vertex*> vertices;
+
+    for (int i = 0; i < 8; ++i) {
+        Vertex *v;
+        vertices.push_back(v);
+    }
 
     // read in vertices
     while(!ifs.eof()) {
@@ -121,13 +121,11 @@ int main(int argc, char*[] argv) {
         Edge e(source, destination, weight);
 
         // vertex
-        vertices[source].AddEdge(e);
+        vertices[source]->AddEdge(&e);
     }
 
-    Graph g(vertices);
+    Graph g;
 
-    std::cout <<
-
-    MST::Prim(g);
+//    MST::Prim(g);
     return 0;
 }
