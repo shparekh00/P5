@@ -1,6 +1,4 @@
-//
-// Created by Deepak Lalchandani on 2019-05-29.
-//
+#include "index_min_pq.h"
 
 class Edge {
 public:
@@ -64,17 +62,16 @@ std::vector<Edge*> Vertex::CollectionEdges() {
 
 class Graph {
  public:
-    explicit Graph();
+    explicit Graph(int num);
     void AddVertex(Vertex* v);
-    std::vector<Vertex*> CollectionVertices();
 
  private:
-    std::vector<Vertex*> vertices;
     int num_vertices;
+    std::array<Vertex*, num_vertices> vertices[];
 };
 
-Graph::Graph() {
-    num_vertices = 0;
+Graph::Graph(std::array<Vertex*> v[]) {
+    vertices = v;
 }
 
 void Graph::AddVertex(Vertex *v) {
@@ -82,6 +79,55 @@ void Graph::AddVertex(Vertex *v) {
     num_vertices++;
 }
 
-std::vector<Vertex *> Graph::CollectionVertices() {
-    return vertices;
+
+class MST {
+public:
+    MST();
+    void Prim(Graph graph);
+
+private:
+    Graph graph;
+};
+
+MST::MST() {
+}
+
+void MST::Prim(Graph graph) {
+    IndexMinPQ pqueue;
+
+}
+
+
+
+
+int main(int argc, char*[] argv) {
+    std::ifstream ifs;
+    ifs.open(argv[1]);
+    if (!ifs.is_open()) {
+        std::cerr << "Error: cannot open file " << argv[1];
+        return 1;
+    }
+
+    int capacity;
+    ifs >> capacity;
+    std::array<Vertex*, capacity> vertices[];
+
+    // read in vertices
+    while(!ifs.eof()) {
+        unsigned int source, destination;
+        double weight;
+
+        ifs >> source >> destination >> weight;
+        Edge e(source, destination, weight);
+
+        // vertex
+        vertices[source].AddEdge(e);
+    }
+
+    Graph g(vertices);
+
+    std::cout <<
+
+    MST::Prim(g);
+    return 0;
 }
