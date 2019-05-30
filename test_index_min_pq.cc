@@ -155,7 +155,7 @@ TEST(IndexMinPQ, ChangeKeyNonexistent) {
 */
 
 
-/*
+
 TEST(DoubleIndexMinPQ, PushExistingIndexException) {
   // Indexed min-priority queue of capacity 100
   IndexMinPQ<double> impq(100);
@@ -457,7 +457,7 @@ TEST(DoubleIndexMinPQ, ChangeKeyDoesntExistException) {
 
 
 
-*/
+
 
 
 
