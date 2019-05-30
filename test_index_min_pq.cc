@@ -1,9 +1,5 @@
 // @copyright 2019 Shivani Parekh and Urmi Lalchandani
 
-#include <algorithm>
-#include <iostream>
-#include <utility>
-#include <vector>
 #include <gtest/gtest.h>
 #include "index_min_pq.h"
 
