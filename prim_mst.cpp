@@ -221,7 +221,7 @@ int main(int argc, char *argv[]) {
 
   // vector of empty vertices of size capacity
   std::vector<Vertex> vertices;
-  for (int i = 0; i < capacity; ++i) {
+  for (unsigned int i = 0; i < capacity; ++i) {
       Vertex v;
       vertices.push_back(v);
   }
