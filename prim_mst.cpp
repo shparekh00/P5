@@ -114,13 +114,15 @@ MST::MST() {}
 void MST::Prim(Graph graph) {
   // key = weight index = dest_vert
   IndexMinPQ<double> pqueue(graph.GetNumEdges());
-  const double inf = std::numeric_limits<double>::infinity();
+  static const double inf = std::numeric_limits<double>::infinity();
   std::vector<double> dist;  // dist from src to v
   std::vector<bool> marked;  // has vertex already been visited?
 
   for (Vertex v : graph.Vertices()) {
     dist.push_back(inf);
     marked.push_back(false);
+    Edge e(0, 0, 0);
+    edge.push_back(e);
   }
   // for each vertex in graph.Vertices()
   for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
@@ -133,17 +135,14 @@ void MST::Prim(Graph graph) {
     // for each v search edge list
     // find smallest edge for that v
     pqueue.Push(dist[i], i);
-    unsigned int prev = inf;
+//    unsigned int prev = inf;
 
     while (pqueue.Size() > 0) {
       // get destination(vertex) w/ smallest weight
       unsigned int u = pqueue.Top();
       pqueue.Pop();
       marked[u] = true;
-      std::cout<<"u is "<< u<<std::endl;
-
-      Edge curr(prev, u, dist[u]);
-      edge.push_back(curr);
+      std::cout << "u is " << u << std::endl;
 
       for (Edge neighbor : graph.Vertices()[u].GetEdges()) {
         unsigned int v;
@@ -163,7 +162,7 @@ void MST::Prim(Graph graph) {
 
         if (neighbor.Weight() < dist[v]) {
           dist[v] = neighbor.Weight();
-//          edge.push_back(neighbor);
+          edge[v] = neighbor;
           std::cout << "edge: source " << neighbor.Source() << " destination: " << neighbor.Destination() << " weight: " << neighbor.Weight() << std::endl;
           if (pqueue.Contains(v)) {
             pqueue.ChangeKey(dist[v], v);
@@ -171,25 +170,19 @@ void MST::Prim(Graph graph) {
             pqueue.Push(dist[v], v);
           }
         }
-
       }
-
-      prev = u;
-
     }
   }
 
-//  std::vector<Edge> sequence;
     std::cout << "MST" << std::endl;
     double total_weight = 0;
-    for (Edge e : edge) {
+    for (int index = 1; index < edge.size(); index++) {
+        Edge e = edge[index];
 //      sequence.push_back(e);
         std::cout << e.Source() << "-" << e.Destination() << " (" << e.Weight() << ")" << std::endl;
         total_weight += e.Weight();
     }
-    std::cout << total_weight;
-//  return sequence;
-
+    std::cout << total_weight << std::endl;
 }
 
 // MAIN FUNCTION
@@ -239,7 +232,6 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
 
 
 /*
