@@ -178,7 +178,7 @@ void MST::Prim(Graph graph) {
     double total_weight = 0;
     for (unsigned int index = 1; index < edge.size(); index++) {
         Edge e = edge[index];
-//        std::cout << e.Source() << "-" << e.Destination() << " (" << e.Weight() << ")" << std::endl;
+        std::cout << e.Source() << "-" << e.Destination() << " (" << e.Weight() << ")" << std::endl;
         total_weight += e.Weight();
     }
     std::cout << total_weight << std::endl;
