@@ -116,12 +116,10 @@ void MST::Prim(Graph graph) {
   IndexMinPQ<double> pqueue(graph.GetNumEdges());
   const double inf = std::numeric_limits<double>::infinity();
   std::vector<double> dist;  // dist from src to v
-//  std::vector<Edge> edge();  // best edge to v
   std::vector<bool> marked;  // has vertex already been visited?
 
   for (Vertex v : graph.Vertices()) {
     dist.push_back(inf);
-//    edge.push_back(nullptr);
     marked.push_back(false);
   }
 
