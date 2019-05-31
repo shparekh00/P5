@@ -4,11 +4,14 @@
 #include <iomanip>
 #include <fstream>
 #include <algorithm>
+#include <limits>
+#include <string>
+#include <vector>
 #include "index_min_pq.h"
 
 // EDGE CLASS
 class Edge {
-public:
+ public:
   // initializes private variables
   explicit Edge(unsigned int s, unsigned int d, double w);
   // return source
@@ -18,7 +21,7 @@ public:
   // return weight
   double Weight();
 
-private:
+ private:
   unsigned int source, destination;
   double weight;
 };
@@ -39,13 +42,17 @@ double Edge::Weight() {
 
 // VERTEX CLASS
 class Vertex {
-public:
-  explicit Vertex();
+ public:
+    // initializes private variables
+    Vertex();
+    // adds an edge to private vector edges
   void AddEdge(Edge e);
+  // accessor to return vector edges
   std::vector<Edge> GetEdges();
+  // returns true if the vector edges contains
   bool ContainsEdge(Edge &e);
 
-private:
+ private:
   std::vector<Edge> edges;
 };
 Vertex::Vertex() {}
@@ -58,7 +65,7 @@ std::vector<Edge> Vertex::GetEdges() {
 bool Vertex::ContainsEdge(Edge &e) {
   bool contains = false;
   std::vector<Edge> edge_vec = GetEdges();
-  for (auto &ed: edge_vec) {
+  for (auto &ed : edge_vec) {
     if (ed.Destination() == e.Destination())
       contains = true;
   }
@@ -74,7 +81,6 @@ class Graph {
  private:
     std::vector<Vertex> vertices;
 };
-
 Graph::Graph(std::vector<Vertex> v) {
     vertices = v;
 }
@@ -83,7 +89,7 @@ std::vector<Vertex> Graph::Vertices() {
 }
 size_t Graph::GetNumEdges() {
   size_t num_edges = 0;
-  for (auto &v : Vertices()){
+  for (auto &v : Vertices()) {
     num_edges+= v.GetEdges().size();
   }
   return num_edges;
@@ -91,12 +97,10 @@ size_t Graph::GetNumEdges() {
 
 // MIN SPANNING TREE CLASS
 class MST {
-public:
-  MST(Graph g);
-
-private:
+ public:
+  explicit MST(Graph g);
+ private:
   std::vector<Edge> edge;
-
 };
 MST::MST(Graph graph) {
   // key = weight index = dest_vert
@@ -105,6 +109,7 @@ MST::MST(Graph graph) {
   std::vector<double> dist;  // dist from src to v
   std::vector<bool> marked;  // has vertex already been visited?
 
+  // initialize dist marked and edge vectors
   for (Vertex v : graph.Vertices()) {
     dist.push_back(inf);
     marked.push_back(false);
@@ -113,13 +118,14 @@ MST::MST(Graph graph) {
   }
 
   // for each vertex in graph.Vertices()
-  for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
+  for (unsigned int i = 0; i < graph.Vertices().size(); i++) {
     // skip visited vertex
     if (marked[i]) {
       continue;
     }
 
-    dist[i] = 0;  // distance to itself is 0
+    // distance to itself is 0
+    dist[i] = 0;
     // for each v search edge list
     // find smallest edge for that v
     pqueue.Push(dist[i], i);
@@ -130,7 +136,9 @@ MST::MST(Graph graph) {
       pqueue.Pop();
       marked[u] = true;
 
+      // all the connected edges of the current vertex
       for (Edge neighbor : graph.Vertices()[u].GetEdges()) {
+        // get the correct adjacent vertex
         unsigned int v;
         if (neighbor.Source() == u) {
             v = neighbor.Destination();
@@ -139,11 +147,14 @@ MST::MST(Graph graph) {
             v = neighbor.Source();
         }
 
+        // skip visited vertex
         if (marked[v]) {
             continue;
         }
 
+        // new path to reach vertex is shorter than current path (initially infinity)
         if (neighbor.Weight() < dist[v]) {
+          // update distance vector, edge vector, and pqueue
           dist[v] = neighbor.Weight();
           edge[v] = neighbor;
           if (pqueue.Contains(v)) {
@@ -156,11 +167,11 @@ MST::MST(Graph graph) {
     }
   }
 
-
+  // print out minimum spanning tree
+  // special case for empty text file
   if (edge.size() == 2) {
       std::cout << "0.00000" << std::endl;
-  }
-  else {
+  } else {
       double total_weight = 0;
       for (unsigned int index = 1; index < edge.size(); index++) {
           Edge e = edge[index];
@@ -218,7 +229,7 @@ int main(int argc, char *argv[]) {
   // read in vertices
   unsigned int source, destination;
   double weight;
-  while(!ifs.eof()) {
+  while (!ifs.eof()) {
     // read one line to get an edge
     ifs >> source >> destination >> weight;
 
