@@ -202,8 +202,8 @@ int main(int argc, char *argv[]) {
 
   // get first line containing the number of vertices
   // check for valid size
-  std::string line = ifs.getline();
-  int i = 0;
+    std::string line;
+    std::getline(std::cin, line);  int i = 0;
   bool invalid = false;
 
   while (line[i]) {
@@ -217,7 +217,6 @@ int main(int argc, char *argv[]) {
   }
   // number of vertices
   size_t capacity = std::stoul(line);
-
 
   // vector of empty vertices of size capacity
   std::vector<Vertex> vertices;
