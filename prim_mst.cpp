@@ -152,7 +152,8 @@ MST::MST(Graph graph) {
             continue;
         }
 
-        // new path to reach vertex is shorter than current path (initially infinity)
+        // new path to reach vertex is shorter than current path
+        // (initially infinity)
         if (neighbor.Weight() < dist[v]) {
           // update distance vector, edge vector, and pqueue
           dist[v] = neighbor.Weight();
@@ -177,7 +178,8 @@ MST::MST(Graph graph) {
           Edge e = edge[index];
           std::cout.precision(5);
           std::cout << std::setfill('0') << std::setw(4) << e.Source();
-          std::cout << "-" << std::setfill('0') << std::setw(4) << e.Destination();
+          std::cout << "-";
+          std::cout << std::setfill('0') << std::setw(4) << e.Destination();
           std::cout << " (" << std::fixed << e.Weight() << ")" << std::endl;
           total_weight += e.Weight();
       }
