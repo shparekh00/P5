@@ -211,6 +211,7 @@ int main(int argc, char *argv[]) {
     if (isalpha(line[i])) {
       invalid = true;
     }
+    i++;
   }
   if (invalid) {
     std::cerr << "Error: invalid graph size " << std::endl;
