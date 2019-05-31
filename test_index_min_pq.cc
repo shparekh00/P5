@@ -238,24 +238,24 @@ TEST(IntMinPQ, SimpleScenario) {
     impq.Push(i.first, i.second);
   }
 
-  // Key-value at the top should now be (2.2, 99)
+  // Key-value at the top should now be (2, 99)
   EXPECT_EQ(impq.Top(), 99);
   impq.Pop();
 
   // Test Contains()
   EXPECT_TRUE(impq.Contains(93));
 
-  // Key-value at the top should now be (42.5, 53)
+  // Key-value at the top should now be (42, 53)
   EXPECT_EQ(impq.Top(), 53);
 
   // Test ChangeKey(): change key associated to value 93
   impq.ChangeKey(1, 93);
-  // Key-value at the top should now be (1.0, 93)
+  // Key-value at the top should now be (1, 93)
   EXPECT_EQ(impq.Top(), 93);
 }
 
 TEST(IntMinPQ, Overflow) {
-  // Indexed min-priority queue of capacity 4
+  // Indexed min-priority queue of capacity 100
   IndexMinPQ<unsigned int> impq(100);
 
   // Insert a bunch of key-value
@@ -305,8 +305,9 @@ TEST(IntMinPQ, RepeatKey) {
     impq.Push(i.first, i.second);
   }
 
+  // push key that already exists
   impq.Push(2, 24);
-
+  // top should remain the same
   EXPECT_EQ(impq.Top(), 99);
 }
 
@@ -345,13 +346,13 @@ TEST(IntMinPQ, SimpleChangeKey) {
     impq.Push(i.first, i.second);
   }
 
-  // Key-value at the top: 2.2
+  // Key-value at the top: 2
   EXPECT_EQ(impq.Top(), 99);
 
   // Test ChangeKey(): change key associated to value 32
   impq.ChangeKey(1, 32);
 
-  // Key-value at the top:(1.0, 32)
+  // Key-value at the top:(1, 32)
   EXPECT_EQ(impq.Top(), 32);
 }
 
@@ -367,7 +368,7 @@ TEST(IntMinPQ, ChangeKeyIdxOutofBounds) {
   for (auto &i : keyval) {
     impq.Push(i.first, i.second);
   }
-
+  // index of key to change is out of bounds
   EXPECT_THROW(impq.ChangeKey(2, 102), std::overflow_error);
 }
 
@@ -383,7 +384,7 @@ TEST(IntMinPQ, ChangeKeyNonexistent) {
   for (auto &i : keyval) {
     impq.Push(i.first, i.second);
   }
-
+  EXPECT_FALSE(impq.Contains(52));
   EXPECT_THROW(impq.ChangeKey(1, 52), std::runtime_error);
 }
 
