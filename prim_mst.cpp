@@ -70,7 +70,6 @@ class Graph {
  public:
     explicit Graph(std::vector<Vertex> v);
     std::vector<Vertex> Vertices();
-    void Printer(Graph g);
     size_t GetNumEdges();
  private:
     std::vector<Vertex> vertices;
@@ -81,16 +80,6 @@ Graph::Graph(std::vector<Vertex> v) {
 }
 std::vector<Vertex> Graph::Vertices() {
     return vertices;
-}
-void Graph::Printer(Graph g) {
-    int i = 0;
-    for(Vertex v : g.vertices) {
-        std::cout << i << std::endl;
-        for(Edge e : v.GetEdges()) {
-            std::cout << "source " << e.Source() << " destination " << e.Destination() << " weight " << e.Weight() << std::endl;
-        }
-        i++;
-    }
 }
 size_t Graph::GetNumEdges() {
   size_t num_edges = 0;
@@ -103,16 +92,13 @@ size_t Graph::GetNumEdges() {
 // MIN SPANNING TREE CLASS
 class MST {
 public:
-  MST();
-  void Prim(Graph g);
+  MST(Graph g);
 
 private:
-//  Graph graph;
   std::vector<Edge> edge;
 
 };
-MST::MST() {}
-void MST::Prim(Graph graph) {
+MST::MST(Graph graph) {
   // key = weight index = dest_vert
   IndexMinPQ<double> pqueue(graph.GetNumEdges());
   static const double inf = std::numeric_limits<double>::infinity();
@@ -224,11 +210,7 @@ int main(int argc, char *argv[]) {
     }
 
     Graph g(vertices);
-
-    MST m;
-    m.Prim(g);
-
+    MST m(g);
     ifs.close();
-
     return 0;
 }
