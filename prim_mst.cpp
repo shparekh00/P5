@@ -4,11 +4,14 @@
 #include <iomanip>
 #include <fstream>
 #include <algorithm>
+#include <limits>
+#include <string>
+#include <vector>
 #include "index_min_pq.h"
 
 // EDGE CLASS
 class Edge {
-public:
+ public:
   // initializes private variables
   explicit Edge(unsigned int s, unsigned int d, double w);
   // return source
@@ -18,7 +21,7 @@ public:
   // return weight
   double Weight();
 
-private:
+ private:
   unsigned int source, destination;
   double weight;
 };
@@ -39,13 +42,17 @@ double Edge::Weight() {
 
 // VERTEX CLASS
 class Vertex {
-public:
-  explicit Vertex();
+ public:
+    // initializes private variables
+    Vertex();
+    // adds an edge to private vector edges
   void AddEdge(Edge e);
+  // accessor to return vector edges
   std::vector<Edge> GetEdges();
+  // returns true if the vector edges contains
   bool ContainsEdge(Edge &e);
 
-private:
+ private:
   std::vector<Edge> edges;
 };
 Vertex::Vertex() {}
@@ -58,7 +65,7 @@ std::vector<Edge> Vertex::GetEdges() {
 bool Vertex::ContainsEdge(Edge &e) {
   bool contains = false;
   std::vector<Edge> edge_vec = GetEdges();
-  for (auto &ed: edge_vec) {
+  for (auto &ed : edge_vec) {
     if (ed.Destination() == e.Destination())
       contains = true;
   }
@@ -70,31 +77,19 @@ class Graph {
  public:
     explicit Graph(std::vector<Vertex> v);
     std::vector<Vertex> Vertices();
-    void Printer(Graph g);
     size_t GetNumEdges();
  private:
     std::vector<Vertex> vertices;
 };
-
 Graph::Graph(std::vector<Vertex> v) {
     vertices = v;
 }
 std::vector<Vertex> Graph::Vertices() {
     return vertices;
 }
-void Graph::Printer(Graph g) {
-    int i = 0;
-    for(Vertex v : g.vertices) {
-        std::cout << i << std::endl;
-        for(Edge e : v.GetEdges()) {
-            std::cout << "source " << e.Source() << " destination " << e.Destination() << " weight " << e.Weight() << std::endl;
-        }
-        i++;
-    }
-}
 size_t Graph::GetNumEdges() {
   size_t num_edges = 0;
-  for (auto &v : Vertices()){
+  for (auto &v : Vertices()) {
     num_edges+= v.GetEdges().size();
   }
   return num_edges;
@@ -102,23 +97,19 @@ size_t Graph::GetNumEdges() {
 
 // MIN SPANNING TREE CLASS
 class MST {
-public:
-  MST();
-  void Prim(Graph g);
-
-private:
-//  Graph graph;
+ public:
+  explicit MST(Graph g);
+ private:
   std::vector<Edge> edge;
-
 };
-MST::MST() {}
-void MST::Prim(Graph graph) {
+MST::MST(Graph graph) {
   // key = weight index = dest_vert
   IndexMinPQ<double> pqueue(graph.GetNumEdges());
   static const double inf = std::numeric_limits<double>::infinity();
   std::vector<double> dist;  // dist from src to v
   std::vector<bool> marked;  // has vertex already been visited?
 
+  // initialize dist marked and edge vectors
   for (Vertex v : graph.Vertices()) {
     dist.push_back(inf);
     marked.push_back(false);
@@ -127,13 +118,14 @@ void MST::Prim(Graph graph) {
   }
 
   // for each vertex in graph.Vertices()
-  for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
+  for (unsigned int i = 0; i < graph.Vertices().size(); i++) {
     // skip visited vertex
     if (marked[i]) {
       continue;
     }
 
-    dist[i] = 0;  // distance to itself is 0
+    // distance to itself is 0
+    dist[i] = 0;
     // for each v search edge list
     // find smallest edge for that v
     pqueue.Push(dist[i], i);
@@ -144,7 +136,9 @@ void MST::Prim(Graph graph) {
       pqueue.Pop();
       marked[u] = true;
 
+      // all the connected edges of the current vertex
       for (Edge neighbor : graph.Vertices()[u].GetEdges()) {
+        // get the correct adjacent vertex
         unsigned int v;
         if (neighbor.Source() == u) {
             v = neighbor.Destination();
@@ -153,11 +147,15 @@ void MST::Prim(Graph graph) {
             v = neighbor.Source();
         }
 
+        // skip visited vertex
         if (marked[v]) {
             continue;
         }
 
+        // new path to reach vertex is shorter than current path
+        // (initially infinity)
         if (neighbor.Weight() < dist[v]) {
+          // update distance vector, edge vector, and pqueue
           dist[v] = neighbor.Weight();
           edge[v] = neighbor;
           if (pqueue.Contains(v)) {
@@ -170,17 +168,18 @@ void MST::Prim(Graph graph) {
     }
   }
 
-
+  // print out minimum spanning tree
+  // special case for empty text file
   if (edge.size() == 2) {
       std::cout << "0.00000" << std::endl;
-  }
-  else {
+  } else {
       double total_weight = 0;
       for (unsigned int index = 1; index < edge.size(); index++) {
           Edge e = edge[index];
           std::cout.precision(5);
           std::cout << std::setfill('0') << std::setw(4) << e.Source();
-          std::cout << "-" << std::setfill('0') << std::setw(4) << e.Destination();
+          std::cout << "-";
+          std::cout << std::setfill('0') << std::setw(4) << e.Destination();
           std::cout << " (" << std::fixed << e.Weight() << ")" << std::endl;
           total_weight += e.Weight();
       }
@@ -202,10 +201,11 @@ int main(int argc, char *argv[]) {
     std::cerr << "Error: cannot open file " << argv[1] << std::endl;
     return 1;
   }
-
+  
   // get first line containing the number of vertices
   // check for valid size
-  std::string line = ifs.getline();
+  std::string line;
+  std::getline(ifs, line);
   int i = 0;
   bool invalid = false;
 
@@ -213,6 +213,7 @@ int main(int argc, char *argv[]) {
     if (isalpha(line[i])) {
       invalid = true;
     }
+    i++;
   }
   if (invalid) {
     std::cerr << "Error: invalid graph size " << std::endl;
@@ -221,10 +222,9 @@ int main(int argc, char *argv[]) {
   // number of vertices
   size_t capacity = std::stoul(line);
 
-
   // vector of empty vertices of size capacity
   std::vector<Vertex> vertices;
-  for (int i = 0; i < capacity; ++i) {
+  for (unsigned int i = 0; i < capacity; ++i) {
       Vertex v;
       vertices.push_back(v);
   }
@@ -232,7 +232,7 @@ int main(int argc, char *argv[]) {
   // read in vertices
   unsigned int source, destination;
   double weight;
-  while(!ifs.eof()) {
+  while (!ifs.eof()) {
     // read one line to get an edge
     ifs >> source >> destination >> weight;
 
@@ -261,11 +261,7 @@ int main(int argc, char *argv[]) {
   }
 
   Graph g(vertices);
-
-  MST m;
-  m.Prim(g);
-
+  MST m(g);
   ifs.close();
-
   return 0;
 }
