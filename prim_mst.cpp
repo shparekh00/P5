@@ -41,7 +41,7 @@ class Vertex {
 public:
   explicit Vertex();
   void AddEdge(Edge e);
-  std::vector<Edge> CollectionEdges();
+  std::vector<Edge> GetEdges();
   bool ContainsEdge(Edge &e);
 
 private:
@@ -51,12 +51,12 @@ Vertex::Vertex() {}
 void Vertex::AddEdge(Edge e) {
   edges.push_back(e);
 }
-std::vector<Edge> Vertex::CollectionEdges() {
+std::vector<Edge> Vertex::GetEdges() {
   return edges;
 }
 bool Vertex::ContainsEdge(Edge &e) {
   bool contains = false;
-  std::vector<Edge> edge_vec = CollectionEdges();
+  std::vector<Edge> edge_vec = GetEdges();
   for (auto &ed: edge_vec) {
     if (ed.Destination() == e.Destination())
       contains = true;
@@ -85,7 +85,7 @@ void Graph::Printer(Graph g) {
     int i = 0;
     for(Vertex v : g.vertices) {
         std::cout << i << std::endl;
-        for(Edge e : v.CollectionEdges()) {
+        for(Edge e : v.GetEdges()) {
             std::cout << "source " << e.Source() << " destination " << e.Destination() << " weight " << e.Weight() << std::endl;
         }
         i++;
@@ -94,7 +94,7 @@ void Graph::Printer(Graph g) {
 size_t Graph::GetNumEdges() {
   size_t num_edges = 0;
   for (auto &v : Vertices()){
-    num_edges+= v.CollectionEdges().size();
+    num_edges+= v.GetEdges().size();
   }
   return num_edges;
 }
@@ -116,16 +116,13 @@ void MST::Prim(Graph graph) {
   IndexMinPQ<double> pqueue(graph.GetNumEdges());
   const double inf = std::numeric_limits<double>::infinity();
   std::vector<double> dist;  // dist from src to v
-//  std::vector<Edge> edge();  // best edge to v
   std::vector<bool> marked;  // has vertex already been visited?
 
   for (Vertex v : graph.Vertices()) {
     dist.push_back(inf);
-//    edge.push_back(nullptr);
     marked.push_back(false);
   }
-//  for each vertex in graph.Vertices()
-//  for (Vertex i : graph.Vertices()) {
+  // for each vertex in graph.Vertices()
   for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
     // skip visited vertex
     if (marked[i]) {
@@ -135,39 +132,50 @@ void MST::Prim(Graph graph) {
     dist[i] = 0;  // distance to itself is 0
     // for each v search edge list
     // find smallest edge for that v
-    pqueue.Push(dist[i], i); //
+    pqueue.Push(dist[i], i);
+    unsigned int prev = inf;
 
     while (pqueue.Size() > 0) {
       // get destination(vertex) w/ smallest weight
       unsigned int u = pqueue.Top();
       pqueue.Pop();
       marked[u] = true;
+      std::cout<<"u is "<< u<<std::endl;
 
-      std::vector<Edge> possible_neighbors;
+      Edge curr(prev, u, dist[u]);
+      edge.push_back(curr);
 
-      for (Edge neighbor : graph.Vertices()[u].CollectionEdges()) {
-        if (marked[neighbor.Destination()]) {
-          continue;
+      for (Edge neighbor : graph.Vertices()[u].GetEdges()) {
+        unsigned int v;
+        if (neighbor.Source() == u) {
+            v = neighbor.Destination();
         }
-        if (neighbor.Weight() < dist[neighbor.Destination()]) {
-          dist[neighbor.Destination()] = neighbor.Weight();
-          possible_neighbors.push_back(neighbor);
-          if (pqueue.Contains(neighbor.Destination())) {
-            pqueue.ChangeKey(dist[neighbor.Destination()], neighbor.Destination());
+        if (neighbor.Destination() == u) {
+            v = neighbor.Source();
+        }
+        std::cout << "v is " << v << "\n";
+
+        if (marked[v]) {
+            continue;
+        }
+        std::cout << "neighbors weight: " << neighbor.Weight() << std::endl;
+        std::cout << "dist[v]: " << dist[v] << std::endl;
+
+        if (neighbor.Weight() < dist[v]) {
+          dist[v] = neighbor.Weight();
+//          edge.push_back(neighbor);
+          std::cout << "edge: source " << neighbor.Source() << " destination: " << neighbor.Destination() << " weight: " << neighbor.Weight() << std::endl;
+          if (pqueue.Contains(v)) {
+            pqueue.ChangeKey(dist[v], v);
           } else {
-            pqueue.Push(dist[neighbor.Destination()], neighbor.Destination());
+            pqueue.Push(dist[v], v);
           }
         }
+
       }
 
-      // find smallest neighbor
-      Edge smallest(0, 0, inf);
-      for (Edge e : possible_neighbors) {
-          if (e.Weight() < smallest.Weight()) {
-              smallest = e;
-          }
-      }
-      edge.push_back(smallest);
+      prev = u;
+
     }
   }
 
@@ -181,6 +189,7 @@ void MST::Prim(Graph graph) {
     }
     std::cout << total_weight;
 //  return sequence;
+
 }
 
 // MAIN FUNCTION
@@ -221,10 +230,124 @@ int main(int argc, char *argv[]) {
     }
 
     Graph g(vertices);
-    g.Printer(g);
+//    g.Printer(g);
 
     MST m;
     m.Prim(g);
 
+    ifs.close();
+
     return 0;
 }
+
+
+
+/*
+ *
+ * void MST::Prim(Graph graph) {
+  // key = weight index = dest_vert
+  IndexMinPQ<double> pqueue(graph.GetNumEdges());
+  const double inf = std::numeric_limits<double>::infinity();
+  std::vector<double> dist;  // dist from src to v
+//  std::vector<Edge> edge();  // best edge to v
+  std::vector<bool> marked;  // has vertex already been visited?
+
+  for (Vertex v : graph.Vertices()) {
+    dist.push_back(inf);
+//    edge.push_back(nullptr);
+    marked.push_back(false);
+  }
+  // for each vertex in graph.Vertices()
+//  for (Vertex i : graph.Vertices()) {
+  for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
+    // skip visited vertex
+    if (marked[i]) {
+      continue;
+    }
+
+    dist[i] = 0;  // distance to itself is 0
+    // for each v search edge list
+    // find smallest edge for that v
+    pqueue.Push(dist[i], i);
+
+//    std::vector<Edge> leftover_edges;
+
+    while (pqueue.Size() > 0) {
+      // get destination(vertex) w/ smallest weight
+      unsigned int u = pqueue.Top();
+      pqueue.Pop();
+      marked[u] = true;
+//      std::cout << "marked " << u << " " << std::endl;
+
+//      std::vector<Edge> possible_neighbors;
+
+//      for (Edge e : graph.Vertices()[u].GetEdges()) {
+         //  if its not a repeat
+//          leftover_edges.push_back(e);
+//      }
+
+
+      // print leftover edges
+//      for (Edge e : leftover_edges) {
+//          std::cout << "leftover edge " << e.Source() << " to " << e.Destination() << " weight " << e.Weight() << std::endl;
+//      }
+
+      for (Edge neighbor : graph.Vertices()[u].GetEdges()) {
+        unsigned int v;
+        if (neighbor.Source() == u) {
+            v = neighbor.Destination();
+        }
+        if (neighbor.Destination() == u) {
+            v = neighbor.Source();
+        }
+
+        if (marked[v]) {
+            continue;
+        }
+
+        if (neighbor.Weight() < dist[v]) {
+          dist[v] = neighbor.Weight();
+          edge.push_back(neighbor);
+          if (pqueue.Contains(v)) {
+            pqueue.ChangeKey(dist[v], v);
+          } else {
+            pqueue.Push(dist[v], v);
+          }
+        }
+      }
+
+      // find smallest neighbor
+//      Edge smallest(0, 0, inf);
+//      for (Edge e : leftover_edges) {
+//          std::cout << "possible edge source " << e.Source() << " destination " << e.Destination() << " weight " << e.Weight() << std::endl;
+//          if (e.Weight() < smallest.Weight()) {
+//              smallest = e;
+//          }
+//      }
+//      edge.push_back(smallest);
+//        std::cout << "smallest " << smallest.Source() << " to " << smallest.Destination() << " weight " << smallest.Weight() << std::endl;
+
+      // remove from leftover edges
+//      for (int l = 0; l < leftover_edges.size(); l++) {
+//          if ((leftover_edges[l].Source() == smallest.Source() && leftover_edges[l].Destination() == smallest.Destination())) { // || (leftover_edges[l].Source() == smallest.Destination() && leftover_edges[l].Destination() == smallest.Source())) {
+//              if (leftover_edges[l].Weight() == smallest.Weight()) {
+//                  leftover_edges[l] = leftover_edges[leftover_edges.size() - 1];
+//                  leftover_edges.pop_back();
+//              }
+//          }
+//      }
+    }
+  }
+
+//  std::vector<Edge> sequence;
+    std::cout << "MST" << std::endl;
+    double total_weight = 0;
+    for (Edge e : edge) {
+//      sequence.push_back(e);
+        std::cout << e.Source() << "-" << e.Destination() << " (" << e.Weight() << ")" << std::endl;
+        total_weight += e.Weight();
+    }
+    std::cout << total_weight;
+//  return sequence;
+}
+ */
