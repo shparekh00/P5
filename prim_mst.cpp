@@ -202,14 +202,16 @@ int main(int argc, char *argv[]) {
 
   // get first line containing the number of vertices
   // check for valid size
-    std::string line;
-    std::getline(std::cin, line);  int i = 0;
+  std::string line;
+  std::getline(std::cin, line);
+  int i = 0;
   bool invalid = false;
 
   while (line[i]) {
     if (isalpha(line[i])) {
       invalid = true;
     }
+    i++;
   }
   if (invalid) {
     std::cerr << "Error: invalid graph size " << std::endl;
