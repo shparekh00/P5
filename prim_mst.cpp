@@ -142,7 +142,6 @@ void MST::Prim(Graph graph) {
       unsigned int u = pqueue.Top();
       pqueue.Pop();
       marked[u] = true;
-//      std::cout << "u is " << u << std::endl;
 
       for (Edge neighbor : graph.Vertices()[u].GetEdges()) {
         unsigned int v;
@@ -152,18 +151,14 @@ void MST::Prim(Graph graph) {
         if (neighbor.Destination() == u) {
             v = neighbor.Source();
         }
-//        std::cout << "v is " << v << "\n";
 
         if (marked[v]) {
             continue;
         }
-//        std::cout << "neighbors weight: " << neighbor.Weight() << std::endl;
-//        std::cout << "dist[v]: " << dist[v] << std::endl;
 
         if (neighbor.Weight() < dist[v]) {
           dist[v] = neighbor.Weight();
           edge[v] = neighbor;
-//          std::cout << "edge: source " << neighbor.Source() << " destination: " << neighbor.Destination() << " weight: " << neighbor.Weight() << std::endl;
           if (pqueue.Contains(v)) {
             pqueue.ChangeKey(dist[v], v);
           } else {
@@ -176,56 +171,94 @@ void MST::Prim(Graph graph) {
 
     std::cout << "MST" << std::endl;
     double total_weight = 0;
-    for (unsigned int index = 1; index < edge.size(); index++) {
+    if (edge.size() == 1) {
+      std::cout << 0.00000 << std::endl;
+    } else {
+      for (unsigned int index = 1; index < edge.size(); index++) {
         Edge e = edge[index];
         std::cout << e.Source() << "-" << e.Destination() << " (" << e.Weight() << ")" << std::endl;
         total_weight += e.Weight();
+      }
+      std::cout << total_weight << std::endl;
     }
-    std::cout << total_weight << std::endl;
 }
 
 // MAIN FUNCTION
 int main(int argc, char *argv[]) {
-    // open file
-    std::ifstream ifs;
-    ifs.open(argv[1]);
-    if (!ifs.is_open()) {
-        std::cerr << "Error: cannot open file " << argv[1];
-        return 1;
+  // getting correct number arguments
+  if (argc != 2) {
+    std::cerr << "Usage ./prim_mst <graph.dat>" << std::endl;
+    return 1;
+  }
+  // open file
+  std::ifstream ifs;
+  ifs.open(argv[1]);
+  if (!ifs.is_open()) {
+    std::cerr << "Error: cannot open file " << argv[1] << std::endl;
+    return 1;
+  }
+
+  // get first line containing the number of vertices
+  // check for valid size
+  std::string line = ifs.getline();
+  int i = 0;
+  bool invalid = false;
+
+  while (line[i]) {
+    if (isalpha(line[i])) {
+      invalid = true;
     }
+  }
+  if (invalid) {
+    std::cerr << "Error: invalid graph size " << std::endl;
+    return 1;
+  }
+  // number of vertices
+  size_t capacity = std::stoul(line);
 
-    // first number is the number of vertices
-    int capacity;
-    ifs >> capacity;
 
-    // vector of empty vertices of size capacity
-    std::vector<Vertex> vertices;
-    for (int i = 0; i < capacity; ++i) {
-        Vertex v;
-        vertices.push_back(v);
+  // vector of empty vertices of size capacity
+  std::vector<Vertex> vertices;
+  for (int i = 0; i < capacity; ++i) {
+      Vertex v;
+      vertices.push_back(v);
+  }
+
+  // read in vertices
+  unsigned int source, destination;
+  double weight;
+  while(!ifs.eof()) {
+    // read one line to get an edge
+    ifs >> source >> destination >> weight;
+
+    // check for invalid input
+    if (source >= capacity) {
+      std::cerr << "Invalid source vertex number " <<
+        source << std::endl;
+      return 1;
     }
-
-    // read in vertices
-    unsigned int source, destination;
-    double weight;
-    while(!ifs.eof()) {
-        // read one line to get an edge
-        ifs >> source >> destination >> weight;
-
-        Edge e(source, destination, weight);
-        // vertices[source] gives a Vertex*
-        if (!vertices[source].ContainsEdge(e)) {
-          vertices[source].AddEdge(e);
-          vertices[destination].AddEdge(e);
-        }
+    if (destination >= capacity) {
+      std::cerr << "Invalid destination vertex number "
+        << destination << std::endl;
+      return 1;
     }
+    if (weight < 0)
+      std::cerr << "Invalid weight " << weight << std::endl;
 
-    Graph g(vertices);
+    Edge e(source, destination, weight);
+    // vertices[source] gives a Vertex*
+    if (!vertices[source].ContainsEdge(e)) {
+      vertices[source].AddEdge(e);
+      vertices[destination].AddEdge(e);
+    }
+  }
 
-    MST m;
-    m.Prim(g);
+  Graph g(vertices);
 
-    ifs.close();
+  MST m;
+  m.Prim(g);
 
-    return 0;
+  ifs.close();
+
+  return 0;
 }
