@@ -212,12 +212,11 @@ int main(int argc, char *argv[]) {
         // read one line to get an edge
         ifs >> source >> destination >> weight;
 
-        Edge e1(source, destination, weight);
-        Edge e2(destination, source, weight);
+        Edge e(source, destination, weight);
         // vertices[source] gives a Vertex*
-        if (!vertices[source].ContainsEdge(e1)) {
-          vertices[source].AddEdge(e1);
-          vertices[destination].AddEdge(e2);
+        if (!vertices[source].ContainsEdge(e)) {
+          vertices[source].AddEdge(e);
+          vertices[destination].AddEdge(e);
         }
     }
 
