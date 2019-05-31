@@ -1,4 +1,7 @@
+// @copyright 2019 Urmi Lalchandani and Shivani Parekh
+
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <algorithm>
 #include "index_min_pq.h"
@@ -39,7 +42,7 @@ class Vertex {
 public:
   explicit Vertex();
   void AddEdge(Edge e);
-  std::vector<Edge> CollectionEdges();
+  std::vector<Edge> GetEdges();
   bool ContainsEdge(Edge &e);
 
 private:
@@ -49,12 +52,12 @@ Vertex::Vertex() {}
 void Vertex::AddEdge(Edge e) {
   edges.push_back(e);
 }
-std::vector<Edge> Vertex::CollectionEdges() {
+std::vector<Edge> Vertex::GetEdges() {
   return edges;
 }
 bool Vertex::ContainsEdge(Edge &e) {
   bool contains = false;
-  std::vector<Edge> edge_vec = CollectionEdges();
+  std::vector<Edge> edge_vec = GetEdges();
   for (auto &ed: edge_vec) {
     if (ed.Destination() == e.Destination())
       contains = true;
@@ -83,7 +86,7 @@ void Graph::Printer(Graph g) {
     int i = 0;
     for(Vertex v : g.vertices) {
         std::cout << i << std::endl;
-        for(Edge e : v.CollectionEdges()) {
+        for(Edge e : v.GetEdges()) {
             std::cout << "source " << e.Source() << " destination " << e.Destination() << " weight " << e.Weight() << std::endl;
         }
         i++;
@@ -92,7 +95,7 @@ void Graph::Printer(Graph g) {
 size_t Graph::GetNumEdges() {
   size_t num_edges = 0;
   for (auto &v : Vertices()){
-    num_edges+= v.CollectionEdges().size();
+    num_edges+= v.GetEdges().size();
   }
   return num_edges;
 }
@@ -112,18 +115,18 @@ MST::MST() {}
 void MST::Prim(Graph graph) {
   // key = weight index = dest_vert
   IndexMinPQ<double> pqueue(graph.GetNumEdges());
-  const double inf = std::numeric_limits<double>::infinity();
+  static const double inf = std::numeric_limits<double>::infinity();
   std::vector<double> dist;  // dist from src to v
-//  std::vector<Edge> edge();  // best edge to v
   std::vector<bool> marked;  // has vertex already been visited?
 
   for (Vertex v : graph.Vertices()) {
     dist.push_back(inf);
-//    edge.push_back(nullptr);
     marked.push_back(false);
+    Edge e(0, 0, 0);
+    edge.push_back(e);
   }
-//  for each vertex in graph.Vertices()
-//  for (Vertex i : graph.Vertices()) {
+
+  // for each vertex in graph.Vertices()
   for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
     // skip visited vertex
     if (marked[i]) {
@@ -133,7 +136,7 @@ void MST::Prim(Graph graph) {
     dist[i] = 0;  // distance to itself is 0
     // for each v search edge list
     // find smallest edge for that v
-    pqueue.Push(dist[i], i); //
+    pqueue.Push(dist[i], i);
 
     while (pqueue.Size() > 0) {
       // get destination(vertex) w/ smallest weight
@@ -141,44 +144,47 @@ void MST::Prim(Graph graph) {
       pqueue.Pop();
       marked[u] = true;
 
-      std::vector<Edge> possible_neighbors;
-
-      for (Edge neighbor : graph.Vertices()[u].CollectionEdges()) {
-        if (marked[neighbor.Destination()]) {
-          continue;
+      for (Edge neighbor : graph.Vertices()[u].GetEdges()) {
+        unsigned int v;
+        if (neighbor.Source() == u) {
+            v = neighbor.Destination();
         }
-        if (neighbor.Weight() < dist[neighbor.Destination()]) {
-          dist[neighbor.Destination()] = neighbor.Weight();
-          possible_neighbors.push_back(neighbor);
-          if (pqueue.Contains(neighbor.Destination())) {
-            pqueue.ChangeKey(dist[neighbor.Destination()], neighbor.Destination());
+        if (neighbor.Destination() == u) {
+            v = neighbor.Source();
+        }
+
+        if (marked[v]) {
+            continue;
+        }
+
+        if (neighbor.Weight() < dist[v]) {
+          dist[v] = neighbor.Weight();
+          edge[v] = neighbor;
+          if (pqueue.Contains(v)) {
+            pqueue.ChangeKey(dist[v], v);
           } else {
-            pqueue.Push(dist[neighbor.Destination()], neighbor.Destination());
+            pqueue.Push(dist[v], v);
           }
         }
       }
-
-      // find smallest neighbor
-      Edge smallest(0, 0, inf);
-      for (Edge e : possible_neighbors) {
-          if (e.Weight() < smallest.Weight()) {
-              smallest = e;
-          }
-      }
-      edge.push_back(smallest);
     }
   }
 
-//  std::vector<Edge> sequence;
-    std::cout << "MST" << std::endl;
-    double total_weight = 0;
-    for (Edge e : edge) {
-//      sequence.push_back(e);
-        std::cout << e.Source() << "-" << e.Destination() << " (" << e.Weight() << ")" << std::endl;
-        total_weight += e.Weight();
-    }
-    std::cout << total_weight;
-//  return sequence;
+  if (edge.size() == 2) {
+      std::cout << "0.00000" << std::endl;
+  }
+  else {
+      double total_weight = 0;
+      for (unsigned int index = 1; index < edge.size(); index++) {
+          Edge e = edge[index];
+          std::cout.precision(5);
+          std::cout << std::setfill('0') << std::setw(4) << e.Source();
+          std::cout << "-" << std::setfill('0') << std::setw(4) << e.Destination();
+          std::cout << " (" << std::fixed << e.Weight() << ")" << std::endl;
+          total_weight += e.Weight();
+      }
+      std::cout << total_weight << std::endl;
+  }
 }
 
 // MAIN FUNCTION
@@ -209,20 +215,20 @@ int main(int argc, char *argv[]) {
         // read one line to get an edge
         ifs >> source >> destination >> weight;
 
-        Edge e1(source, destination, weight);
-        Edge e2(destination, source, weight);
+        Edge e(source, destination, weight);
         // vertices[source] gives a Vertex*
-        if (!vertices[source].ContainsEdge(e1)) {
-          vertices[source].AddEdge(e1);
-          vertices[destination].AddEdge(e2);
+        if (!vertices[source].ContainsEdge(e)) {
+          vertices[source].AddEdge(e);
+          vertices[destination].AddEdge(e);
         }
     }
 
     Graph g(vertices);
-    g.Printer(g);
 
     MST m;
     m.Prim(g);
+
+    ifs.close();
 
     return 0;
 }
