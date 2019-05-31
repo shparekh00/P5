@@ -247,8 +247,10 @@ int main(int argc, char *argv[]) {
         << destination << std::endl;
       return 1;
     }
-    if (weight < 0)
+    if (weight < 0) {
       std::cerr << "Invalid weight " << weight << std::endl;
+      return 1;
+    }
 
     Edge e(source, destination, weight);
     // vertices[source] gives a Vertex*
