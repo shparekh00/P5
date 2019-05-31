@@ -122,6 +122,7 @@ void MST::Prim(Graph graph) {
     dist.push_back(inf);
     marked.push_back(false);
   }
+
   // for each vertex in graph.Vertices()
   for(unsigned int i = 0; i < graph.Vertices().size(); i++) {
     // skip visited vertex
@@ -133,7 +134,7 @@ void MST::Prim(Graph graph) {
     // for each v search edge list
     // find smallest edge for that v
     pqueue.Push(dist[i], i);
-    unsigned int prev = inf;
+    unsigned int prev = static_cast<unsigned int>(inf);
 
     while (pqueue.Size() > 0) {
       // get destination(vertex) w/ smallest weight
