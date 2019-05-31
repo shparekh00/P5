@@ -38,7 +38,7 @@ TEST(IndexMinPQ, SimpleScenario) {
 }
 
 TEST(IndexMinPQ, Overflow) {
-  // Indexed min-priority queue of capacity 4
+  // Indexed min-priority queue of capacity 100
   IndexMinPQ<double> impq(100);
 
   // Insert a bunch of key-value

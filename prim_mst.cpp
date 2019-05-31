@@ -1,6 +1,7 @@
 // @copyright 2019 Urmi Lalchandani and Shivani Parekh
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <algorithm>
 #include "index_min_pq.h"
@@ -169,18 +170,22 @@ void MST::Prim(Graph graph) {
     }
   }
 
-    std::cout << "MST" << std::endl;
-    double total_weight = 0;
-    if (edge.size() == 1) {
-      std::cout << 0.00000 << std::endl;
-    } else {
+
+  if (edge.size() == 2) {
+      std::cout << "0.00000" << std::endl;
+  }
+  else {
+      double total_weight = 0;
       for (unsigned int index = 1; index < edge.size(); index++) {
-        Edge e = edge[index];
-        std::cout << e.Source() << "-" << e.Destination() << " (" << e.Weight() << ")" << std::endl;
-        total_weight += e.Weight();
+          Edge e = edge[index];
+          std::cout.precision(5);
+          std::cout << std::setfill('0') << std::setw(4) << e.Source();
+          std::cout << "-" << std::setfill('0') << std::setw(4) << e.Destination();
+          std::cout << " (" << std::fixed << e.Weight() << ")" << std::endl;
+          total_weight += e.Weight();
       }
       std::cout << total_weight << std::endl;
-    }
+  }
 }
 
 // MAIN FUNCTION
