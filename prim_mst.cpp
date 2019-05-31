@@ -143,7 +143,6 @@ void MST::Prim(Graph graph) {
       unsigned int u = pqueue.Top();
       pqueue.Pop();
       marked[u] = true;
-//      std::cout << "u is " << u << std::endl;
 
       for (Edge neighbor : graph.Vertices()[u].GetEdges()) {
         unsigned int v;
@@ -153,18 +152,14 @@ void MST::Prim(Graph graph) {
         if (neighbor.Destination() == u) {
             v = neighbor.Source();
         }
-//        std::cout << "v is " << v << "\n";
 
         if (marked[v]) {
             continue;
         }
-//        std::cout << "neighbors weight: " << neighbor.Weight() << std::endl;
-//        std::cout << "dist[v]: " << dist[v] << std::endl;
 
         if (neighbor.Weight() < dist[v]) {
           dist[v] = neighbor.Weight();
           edge[v] = neighbor;
-//          std::cout << "edge: source " << neighbor.Source() << " destination: " << neighbor.Destination() << " weight: " << neighbor.Weight() << std::endl;
           if (pqueue.Contains(v)) {
             pqueue.ChangeKey(dist[v], v);
           } else {
@@ -175,7 +170,6 @@ void MST::Prim(Graph graph) {
     }
   }
 
-    std::cout << "MST" << std::endl;
     double total_weight = 0;
     for (unsigned int index = 1; index < edge.size(); index++) {
         Edge e = edge[index];
